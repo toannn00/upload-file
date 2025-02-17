@@ -42,27 +42,8 @@ export const actions = {
     }
     commit("clearAuth");
   },
-  initAuth({ commit }) {
-    return new Promise((resolve) => {
-      if (!process.client) {
-        resolve();
-        return;
-      }
-
-      const token = localStorage.getItem("token");
-      const email = localStorage.getItem("email");
-
-      if (token && email) {
-        commit("setAuth", { email, token });
-      }
-
-      resolve();
-    });
-  },
   showMessage({ commit }, { message, color = "success" }) {
     commit("showSnackbar", { message, color });
-    setTimeout(() => {
-      commit("hideSnackbar");
-    }, 2000);
+    setTimeout(() => commit("hideSnackbar"), 2000);
   },
 };
