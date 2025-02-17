@@ -66,6 +66,7 @@ export default {
     baseURL: process.env.API_URL,
     browserBaseURL: process.env.API_URL,
     prefix: "",
+    proxy: false,
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
