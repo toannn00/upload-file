@@ -38,7 +38,6 @@ export default {
     };
   },
   mounted() {
-    // Set loading to false after a short delay to ensure auth state is loaded
     setTimeout(() => {
       this.isLoading = false;
     }, 500);
