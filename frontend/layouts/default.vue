@@ -37,10 +37,12 @@ export default {
       isLoading: true,
     };
   },
-  mounted() {
-    setTimeout(() => {
+  async mounted() {
+    try {
+      await this.$store.dispatch('auth/initAuth');
+    } finally {
       this.isLoading = false;
-    }, 500);
+    }
   },
   computed: {
     snackbar() {
