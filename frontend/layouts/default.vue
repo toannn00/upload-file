@@ -5,7 +5,9 @@
         <Header />
         <client-only>
           <template v-if="!isLoading">
-            <Login v-if="!isLoggedIn" />
+            <template v-if="!isLoggedIn">
+              <Login />
+            </template>
             <template v-else>
               <FileUpload />
               <FileList class="mt-4" />
@@ -19,8 +21,6 @@
             ></v-progress-circular>
           </v-row>
         </client-only>
-        <Nuxt v-if="!$nuxt.error" />
-        <error v-else :error="$nuxt.error" />
       </v-container>
     </v-main>
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" top>
@@ -37,8 +37,7 @@ export default {
       isLoading: true,
     };
   },
-  async mounted() {
-    this.isLoading = true;
+  async created() {
     try {
       console.log("Initializing auth...");
       await this.$store.dispatch("auth/initAuth");
