@@ -1,13 +1,11 @@
 <template>
   <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <!-- Upload form will go here -->
-    </v-col>
+    <v-col cols="12" sm="8" md="6"> </v-col>
   </v-row>
 </template>
 
 <script>
 export default {
-  name: 'IndexPage'
-}
+  name: "IndexPage",
+};
 </script>

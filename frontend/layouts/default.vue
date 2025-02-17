@@ -3,7 +3,11 @@
     <v-main>
       <v-container>
         <Header />
-        <Login />
+        <Login v-if="!isLoggedIn" />
+        <template v-if="isLoggedIn">
+          <FileUpload />
+          <FileList class="mt-4" />
+        </template>
         <Nuxt v-if="!$nuxt.error" />
         <error v-else :error="$nuxt.error" />
       </v-container>
@@ -17,14 +21,12 @@
 <script>
 export default {
   name: "DefaultLayout",
-  data() {
-    return {
-      fixed: false,
-    };
-  },
   computed: {
     snackbar() {
       return this.$store.state.auth.snackbar;
+    },
+    isLoggedIn() {
+      return !!this.$store.state.auth.token;
     },
   },
 };
