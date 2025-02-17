@@ -38,8 +38,16 @@ export default {
     };
   },
   async mounted() {
+    this.isLoading = true;
     try {
-      await this.$store.dispatch('auth/initAuth');
+      console.log("Initializing auth...");
+      await this.$store.dispatch("auth/initAuth");
+      console.log("Auth state:", {
+        token: this.$store.state.auth.token,
+        email: this.$store.state.auth.email,
+      });
+    } catch (error) {
+      console.error("Error initializing auth:", error);
     } finally {
       this.isLoading = false;
     }
