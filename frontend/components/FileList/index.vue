@@ -4,6 +4,12 @@
       <v-card class="elevation-12">
         <v-card-title>Your Files</v-card-title>
         <v-card-text>
+          <v-progress-linear
+            v-if="loading"
+            indeterminate
+            color="primary"
+            class="mb-4"
+          ></v-progress-linear>
           <v-list v-if="files.length > 0">
             <v-list-item v-for="file in files" :key="file._id">
               <v-list-item-content>
@@ -19,7 +25,7 @@
               </v-list-item-content>
             </v-list-item>
           </v-list>
-          <v-alert v-else type="info" class="mt-4">
+          <v-alert v-else-if="!loading" type="info" class="mt-4">
             No files uploaded yet.
           </v-alert>
         </v-card-text>
@@ -34,6 +40,7 @@ export default {
   data() {
     return {
       files: [],
+      loading: false,
     };
   },
   mounted() {
@@ -41,6 +48,7 @@ export default {
   },
   methods: {
     async fetchFiles() {
+      this.loading = true;
       try {
         const token = this.$store.state.auth.token;
         const response = await this.$axios.$get("/api/files", {
@@ -58,6 +66,8 @@ export default {
           message: error.response?.data?.message || "Error fetching files",
           color: "error",
         });
+      } finally {
+        this.loading = false;
       }
     },
     formatFileSize(bytes) {
