@@ -2,7 +2,6 @@ import express, { Express } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
-import { indexRouter } from "./routes/index.route";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import { authRouter } from "./routes/auth.route";
 import mongoose from "mongoose";
@@ -38,7 +37,6 @@ class App {
   }
 
   private initializeRoutes() {
-    this.app.use("/api", indexRouter);
     this.app.use("/api/auth", authRouter);
     this.app.use("/api/files", fileRouter);
   }
