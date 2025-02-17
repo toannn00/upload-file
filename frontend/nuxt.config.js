@@ -58,12 +58,13 @@ export default {
 
   publicRuntimeConfig: {
     axios: {
-      baseURL: process.env.API_URL
-    }
+      baseURL: process.env.API_URL,
+    },
   },
 
   axios: {
     baseURL: process.env.API_URL,
+    browserBaseURL: process.env.API_URL,
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
