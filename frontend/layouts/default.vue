@@ -3,11 +3,13 @@
     <v-main>
       <v-container>
         <Header />
-        <Login v-if="!isLoggedIn" />
-        <template v-if="isLoggedIn">
-          <FileUpload />
-          <FileList class="mt-4" />
-        </template>
+        <client-only>
+          <Login v-if="!isLoggedIn" />
+          <template v-if="isLoggedIn">
+            <FileUpload />
+            <FileList class="mt-4" />
+          </template>
+        </client-only>
         <Nuxt v-if="!$nuxt.error" />
         <error v-else :error="$nuxt.error" />
       </v-container>

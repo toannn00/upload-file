@@ -66,6 +66,10 @@ export default {
     baseURL: process.env.API_URL,
   },
 
+  router: {
+    middleware: ["auth"],
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 };
