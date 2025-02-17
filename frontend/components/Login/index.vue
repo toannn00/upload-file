@@ -1,5 +1,5 @@
 <template>
-  <v-row v-if="!isLoggedIn" justify="center" align="center">
+  <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="6">
       <v-alert
         v-if="error"
@@ -21,33 +21,34 @@
       </v-alert>
       <v-card class="elevation-12">
         <v-card-text>
-          <v-form ref="form" v-model="valid" @submit.prevent="handleSubmit">
+          <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
               v-model="email"
               :rules="emailRules"
               label="Email"
               required
-              prepend-icon="mdi-email"
-            ></v-text-field>
-
+              outlined
+              :disabled="loading"
+              hide-details="auto"
+              class="mb-4"
+            />
             <v-text-field
               v-model="password"
               :rules="passwordRules"
               label="Password"
+              type="password"
               required
-              :type="showPassword ? 'text' : 'password'"
-              prepend-icon="mdi-lock"
-              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-              @click:append="showPassword = !showPassword"
-            ></v-text-field>
-
+              outlined
+              :disabled="loading"
+              hide-details="auto"
+              class="mb-4"
+            />
             <v-btn
-              block
               color="primary"
-              :disabled="!valid"
-              @click="handleSubmit"
               :loading="loading"
-              class="mt-4"
+              :disabled="!valid"
+              block
+              @click="handleSubmit"
             >
               Login/Register
             </v-btn>
