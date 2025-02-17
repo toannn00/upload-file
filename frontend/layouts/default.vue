@@ -3,24 +3,22 @@
     <v-main>
       <v-container>
         <Header />
-        <client-only>
-          <div v-if="isLoading">
-            <v-row justify="center" align="center">
-              <v-progress-circular
-                indeterminate
-                color="primary"
-                class="mt-4"
-              ></v-progress-circular>
-            </v-row>
-          </div>
+        <div v-if="isLoading">
+          <v-row justify="center" align="center">
+            <v-progress-circular
+              indeterminate
+              color="primary"
+              class="mt-4"
+            ></v-progress-circular>
+          </v-row>
+        </div>
+        <div v-else>
+          <Login v-if="!isLoggedIn" />
           <div v-else>
-            <Login v-if="!isLoggedIn" />
-            <div v-else>
-              <FileUpload />
-              <FileList class="mt-4" />
-            </div>
+            <FileUpload />
+            <FileList class="mt-4" />
           </div>
-        </client-only>
+        </div>
       </v-container>
     </v-main>
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" top>
