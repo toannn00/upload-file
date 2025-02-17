@@ -1,17 +1,17 @@
 import { Router } from "express";
 import { FileController } from "../controllers/file.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
-import multer from "multer";
+import { upload, handleMulterError } from "../middlewares/upload.middleware";
 
 const router = Router();
 const fileController = new FileController();
-const upload = multer({ storage: multer.memoryStorage() });
 
 // upload file
 router.post(
   "/upload",
   authMiddleware,
   upload.single("file"),
+  handleMulterError,
   fileController.uploadFile
 );
 
