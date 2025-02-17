@@ -4,7 +4,7 @@
       <v-container>
         <Header />
         <client-only>
-          <template>
+          <div v-if="mounted">
             <div v-if="isLoading">
               <v-row justify="center" align="center">
                 <v-progress-circular
@@ -21,7 +21,7 @@
                 <FileList class="mt-4" />
               </template>
             </template>
-          </template>
+          </div>
         </client-only>
       </v-container>
     </v-main>
@@ -37,27 +37,30 @@ export default {
   data() {
     return {
       isLoading: true,
+      mounted: false,
     };
   },
-  async created() {
-    try {
-      if (process.client) {
-        // Clear any existing auth state first
-        this.$store.commit("auth/clearAuth");
+  mounted() {
+    this.mounted = true;
+    this.initAuth();
+  },
+  methods: {
+    async initAuth() {
+      try {
+        if (process.client) {
+          const token = localStorage.getItem("token");
+          const email = localStorage.getItem("email");
 
-        // Then initialize from localStorage
-        const token = localStorage.getItem("token");
-        const email = localStorage.getItem("email");
-
-        if (token && email) {
-          this.$store.commit("auth/setAuth", { email, token });
+          if (token && email) {
+            this.$store.commit("auth/setAuth", { email, token });
+          }
         }
+      } catch (error) {
+        console.error("Error initializing auth:", error);
+      } finally {
+        this.isLoading = false;
       }
-    } catch (error) {
-      console.error("Error initializing auth:", error);
-    } finally {
-      this.isLoading = false;
-    }
+    },
   },
   computed: {
     snackbar() {
