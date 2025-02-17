@@ -3,24 +3,26 @@
     <v-main>
       <v-container>
         <Header />
-        <div v-if="isLoading">
-          <v-row justify="center" align="center">
-            <v-progress-circular
-              indeterminate
-              color="primary"
-              class="mt-4"
-            ></v-progress-circular>
-          </v-row>
-        </div>
-        <div v-else>
-          <client-only>
-            <Login v-if="!isLoggedIn" />
-            <div v-else>
-              <FileUpload />
-              <FileList class="mt-4" />
+        <client-only>
+          <div v-if="mounted">
+            <div v-if="isLoading">
+              <v-row justify="center" align="center">
+                <v-progress-circular
+                  indeterminate
+                  color="primary"
+                  class="mt-4"
+                ></v-progress-circular>
+              </v-row>
             </div>
-          </client-only>
-        </div>
+            <template v-else>
+              <Login v-if="!isLoggedIn" />
+              <template v-else>
+                <FileUpload />
+                <FileList class="mt-4" />
+              </template>
+            </template>
+          </div>
+        </client-only>
       </v-container>
     </v-main>
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" top>
@@ -35,36 +37,30 @@ export default {
   data() {
     return {
       isLoading: true,
+      mounted: false,
     };
   },
-  async mounted() {
-    try {
-      console.log("Starting auth initialization...");
-      console.log("Current auth state:", {
-        token: this.$store.state.auth.token,
-        email: this.$store.state.auth.email,
-      });
+  mounted() {
+    this.mounted = true;
+    this.initAuth();
+  },
+  methods: {
+    async initAuth() {
+      try {
+        if (process.client) {
+          const token = localStorage.getItem("token");
+          const email = localStorage.getItem("email");
 
-      if (process.client) {
-        console.log("localStorage values:", {
-          token: localStorage.getItem("token"),
-          email: localStorage.getItem("email"),
-        });
+          if (token && email) {
+            this.$store.commit("auth/setAuth", { email, token });
+          }
+        }
+      } catch (error) {
+        console.error("Error initializing auth:", error);
+      } finally {
+        this.isLoading = false;
       }
-
-      await this.$store.dispatch("auth/initAuth");
-
-      console.log("After initialization auth state:", {
-        token: this.$store.state.auth.token,
-        email: this.$store.state.auth.email,
-      });
-
-      console.log("isLoggedIn:", this.isLoggedIn);
-    } catch (error) {
-      console.error("Error initializing auth:", error);
-    } finally {
-      this.isLoading = false;
-    }
+    },
   },
   computed: {
     snackbar() {

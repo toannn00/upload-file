@@ -43,17 +43,19 @@ export const actions = {
     commit("clearAuth");
   },
   initAuth({ commit }) {
-    console.log("initAuth");
-    console.log(process.client);
-    
     return new Promise((resolve) => {
-      if (process.client) {
-        const token = localStorage.getItem("token");
-        const email = localStorage.getItem("email");
-        if (token && email) {
-          commit("setAuth", { email, token });
-        }
+      if (!process.client) {
+        resolve();
+        return;
       }
+
+      const token = localStorage.getItem("token");
+      const email = localStorage.getItem("email");
+
+      if (token && email) {
+        commit("setAuth", { email, token });
+      }
+
       resolve();
     });
   },
