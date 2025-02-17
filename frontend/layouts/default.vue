@@ -5,15 +5,13 @@
         <Header />
         <client-only>
           <div v-if="mounted">
-            <div v-if="isLoading">
-              <v-row justify="center" align="center">
-                <v-progress-circular
-                  indeterminate
-                  color="primary"
-                  class="mt-4"
-                ></v-progress-circular>
-              </v-row>
-            </div>
+            <v-row v-if="isLoading" justify="center" align="center">
+              <v-progress-circular
+                indeterminate
+                color="primary"
+                class="mt-4"
+              ></v-progress-circular>
+            </v-row>
             <template v-else>
               <Login v-if="!isLoggedIn" />
               <template v-else>
@@ -55,8 +53,6 @@ export default {
             this.$store.commit("auth/setAuth", { email, token });
           }
         }
-      } catch (error) {
-        console.error("Error initializing auth:", error);
       } finally {
         this.isLoading = false;
       }
