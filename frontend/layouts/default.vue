@@ -3,24 +3,24 @@
     <v-main>
       <v-container>
         <Header />
-        <client-only>
-          <template v-if="!isLoading">
-            <template v-if="!isLoggedIn">
-              <Login />
-            </template>
-            <template v-else>
-              <FileUpload />
-              <FileList class="mt-4" />
-            </template>
-          </template>
-          <v-row v-else justify="center" align="center">
+        <div v-if="isLoading">
+          <v-row justify="center" align="center">
             <v-progress-circular
               indeterminate
               color="primary"
               class="mt-4"
             ></v-progress-circular>
           </v-row>
-        </client-only>
+        </div>
+        <div v-else>
+          <client-only>
+            <Login v-if="!isLoggedIn" />
+            <div v-else>
+              <FileUpload />
+              <FileList class="mt-4" />
+            </div>
+          </client-only>
+        </div>
       </v-container>
     </v-main>
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" top>
@@ -37,7 +37,7 @@ export default {
       isLoading: true,
     };
   },
-  async created() {
+  async mounted() {
     try {
       console.log("Starting auth initialization...");
       console.log("Current auth state:", {
