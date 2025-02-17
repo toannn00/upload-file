@@ -6,7 +6,8 @@ import { indexRouter } from "./routes/index.route";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import { authRouter } from "./routes/auth.route";
 import mongoose from "mongoose";
-
+import { fileRouter } from "./routes/file.route";
+import { MONGODB_URI } from "./constants/env.constant";
 class App {
   public app: Express;
 
@@ -19,8 +20,6 @@ class App {
   }
 
   private async connectToDatabase() {
-    const MONGODB_URI =
-      process.env.MONGODB_URI || "mongodb://localhost:27017/file-upload";
     try {
       await mongoose.connect(MONGODB_URI);
       console.log("Connected to MongoDB");
@@ -40,6 +39,7 @@ class App {
   private initializeRoutes() {
     this.app.use("/api", indexRouter);
     this.app.use("/api/auth", authRouter);
+    this.app.use("/api/files", fileRouter);
   }
 
   private initializeErrorHandling() {
