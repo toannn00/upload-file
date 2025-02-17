@@ -83,6 +83,12 @@ export default {
             color: "success",
           });
           this.file = null;
+          const fileListComponent = this.$parent.$children.find(
+            (child) => child.$options.name === "FileList"
+          );
+          if (fileListComponent) {
+            fileListComponent.fetchFiles();
+          }
         }
       } catch (error) {
         console.error("Upload error:", error);
