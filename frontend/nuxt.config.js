@@ -64,14 +64,6 @@ export default {
 
   axios: {
     baseURL: process.env.API_URL,
-    browserBaseURL: process.env.API_URL,
-    prefix: "",
-    proxy: false,
-    headers: {
-      common: {
-        Accept: "application/json",
-      },
-    },
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
