@@ -1,7 +1,7 @@
 <template>
   <div>
     <client-only>
-      <div v-if="mounted">
+      <div v-if="isMounted">
         <v-row v-if="isLoading" justify="center" align="center">
           <v-progress-circular
             indeterminate
@@ -22,44 +22,37 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { Vue, Component } from "vue-property-decorator";
 
-export default Vue.extend({
+@Component({
   name: "HomePage",
+})
+export default class HomePage extends Vue {
+  private isLoading = true;
+  private isMounted = false;
 
-  data() {
-    return {
-      isLoading: true,
-      mounted: false,
-    };
-  },
+  get isLoggedIn(): boolean {
+    return !!this.$store.state.auth.token;
+  }
 
-  computed: {
-    isLoggedIn(): boolean {
-      return !!this.$store.state.auth.token;
-    },
-  },
-
-  mounted() {
-    this.mounted = true;
+  mounted(): void {
+    this.isMounted = true;
     this.initAuth();
-  },
+  }
 
-  methods: {
-    async initAuth(): Promise<void> {
-      try {
-        if (process.client) {
-          const token = localStorage.getItem("token");
-          const email = localStorage.getItem("email");
+  private async initAuth(): Promise<void> {
+    try {
+      if (process.client) {
+        const token = localStorage.getItem("token");
+        const email = localStorage.getItem("email");
 
-          if (token && email) {
-            this.$store.commit("auth/setAuth", { email, token });
-          }
+        if (token && email) {
+          this.$store.commit("auth/setAuth", { email, token });
         }
-      } finally {
-        this.isLoading = false;
       }
-    },
-  },
-});
+    } finally {
+      this.isLoading = false;
+    }
+  }
+}
 </script>

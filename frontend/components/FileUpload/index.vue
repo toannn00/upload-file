@@ -27,78 +27,82 @@
   </v-row>
 </template>
 
-<script>
-const MAX_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+import { MAX_FILE_SIZE } from "~/constants";
+import { FileRules, FileListComponent, UploadResponse } from "~/types/api";
+import "~/types/vue-augmentation";
 
-export default {
+@Component({
   name: "FileUpload",
-  data() {
-    return {
-      file: null,
-      loading: false,
-      rules: {
-        maxSize: (file) => {
-          return (
-            !file ||
-            file.size <= MAX_SIZE ||
-            "File size should be less than 5MB"
-          );
-        },
-      },
-    };
-  },
-  computed: {
-    isValidFileSize() {
-      return this.file && this.file.size <= MAX_SIZE;
-    },
-  },
-  methods: {
-    onFileChange(file) {
-      this.file = file;
-    },
-    async handleUpload() {
-      if (!this.file) return;
+})
+export default class FileUpload extends Vue {
+  private file: File | null = null;
+  private loading = false;
 
-      this.loading = true;
-      try {
-        const formData = new FormData();
-        formData.append("file", this.file);
+  private rules: FileRules = {
+    maxSize: (file: File | null) => {
+      return (
+        !file ||
+        file.size <= MAX_FILE_SIZE ||
+        "File size should be less than 5MB"
+      );
+    },
+  };
 
-        const token = this.$store.state.auth.token;
-        const response = await this.$axios.$post(
-          "/api/files/upload",
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
+  get isValidFileSize(): boolean {
+    return !!this.file && this.file.size <= MAX_FILE_SIZE;
+  }
+
+  onFileChange(file: File | null): void {
+    this.file = file;
+  }
+
+  async handleUpload(): Promise<void> {
+    if (!this.file) return;
+
+    this.loading = true;
+    try {
+      const formData = new FormData();
+      formData.append("file", this.file);
+
+      const token = this.$store.state.auth.token;
+      const response = await this.$axios.$post<UploadResponse>(
+        "/api/files/upload",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response?.success) {
+        this.$store.dispatch("auth/showMessage", {
+          message: "File uploaded successfully!",
+          color: "success",
+        });
+        this.file = null;
+
+        const fileListComponent = this.$parent?.$children.find(
+          (child): child is FileListComponent =>
+            child.$options.name === "FileList"
         );
 
-        if (response.success) {
-          this.$store.dispatch("auth/showMessage", {
-            message: "File uploaded successfully!",
-            color: "success",
-          });
-          this.file = null;
-          const fileListComponent = this.$parent.$children.find(
-            (child) => child.$options.name === "FileList"
-          );
-          if (fileListComponent) {
-            fileListComponent.fetchFiles();
-          }
+        if (fileListComponent?.fetchFiles) {
+          fileListComponent.fetchFiles();
         }
-      } catch (error) {
-        console.error("Upload error:", error);
-        this.$store.dispatch("auth/showMessage", {
-          message: error.response?.data?.message || "Error uploading file",
-          color: "error",
-        });
-      } finally {
-        this.loading = false;
       }
-    },
-  },
-};
+    } catch (error: any) {
+      console.error("Upload error:", error);
+      this.$store.dispatch("auth/showMessage", {
+        message: error.response?.data?.message || "Error uploading file",
+        color: "error",
+      });
+    } finally {
+      this.loading = false;
+    }
+  }
+}
 </script>

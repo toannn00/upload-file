@@ -34,51 +34,54 @@
   </v-row>
 </template>
 
-<script>
-export default {
-  name: "FileList",
-  data() {
-    return {
-      files: [],
-      loading: false,
-    };
-  },
-  mounted() {
-    this.fetchFiles();
-  },
-  methods: {
-    async fetchFiles() {
-      this.loading = true;
-      try {
-        const token = this.$store.state.auth.token;
-        const response = await this.$axios.$get("/api/files", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+import { FileData } from "~/types/api";
+import "~/types/vue-augmentation";
 
-        if (response.success) {
-          this.files = response.data.files;
-        }
-      } catch (error) {
-        console.error("Error fetching files:", error);
-        this.$store.dispatch("auth/showMessage", {
-          message: error.response?.data?.message || "Error fetching files",
-          color: "error",
-        });
-      } finally {
-        this.loading = false;
+@Component({
+  name: "FileList",
+})
+export default class FileList extends Vue {
+  private files: FileData[] = [];
+  private loading = false;
+
+  mounted(): void {
+    this.fetchFiles();
+  }
+
+  async fetchFiles(): Promise<void> {
+    this.loading = true;
+    try {
+      const token = this.$store.state.auth.token;
+      const response = await this.$axios.$get("/api/files", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.success) {
+        this.files = response.data.files;
       }
-    },
-    formatFileSize(bytes) {
-      if (bytes === 0) return "0 Bytes";
-      const k = 1024;
-      const sizes = ["Bytes", "KB", "MB", "GB"];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-    },
-  },
-};
+    } catch (error: any) {
+      console.error("Error fetching files:", error);
+      this.$store.dispatch("auth/showMessage", {
+        message: error.response?.data?.message || "Error fetching files",
+        color: "error",
+      });
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  }
+}
 </script>
 
 <style scoped>

@@ -28,6 +28,8 @@
     "jest": "^29.1.2",
     "jest-environment-jsdom": "^29.1.2",
     "ts-jest": "^29.0.3",
-    "vue-jest": "^3.0.4"
+    "vue-class-component": "^7.2.6",
+    "vue-jest": "^3.0.4",
+    "vue-property-decorator": "^9.1.2"
   }
 }

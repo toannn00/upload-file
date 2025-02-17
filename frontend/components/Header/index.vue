@@ -13,18 +13,19 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+
+@Component({
   name: "Header",
-  computed: {
-    email() {
-      return this.$store.state.auth.email;
-    },
-  },
-  methods: {
-    logout() {
-      this.$store.dispatch("auth/logout");
-    },
-  },
-};
+})
+export default class Header extends Vue {
+  get email(): string | null {
+    return this.$store.state.auth.email;
+  }
+
+  logout(): void {
+    this.$store.dispatch("auth/logout");
+  }
+}
 </script>
