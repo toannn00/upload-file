@@ -91,7 +91,7 @@ export default {
 
       this.loading = true;
       try {
-        const response = await this.$axios.$post("/api/auth/authenticate", {
+        const response = await this.$axios.$post("api/auth/authenticate", {
           email: this.email,
           password: this.password,
         });
