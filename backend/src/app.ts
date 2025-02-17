@@ -8,6 +8,7 @@ import { authRouter } from "./routes/auth.route";
 import mongoose from "mongoose";
 import { fileRouter } from "./routes/file.route";
 import { MONGODB_URI } from "./constants/env.constant";
+
 class App {
   public app: Express;
 
