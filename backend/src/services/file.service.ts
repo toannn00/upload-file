@@ -33,7 +33,7 @@ export class FileService {
         fileName: uploadResult.public_id,
         originalName: file.originalname,
         url: uploadResult.secure_url,
-        format: uploadResult.format,
+        format: uploadResult.format ?? "raw",
         size: file.size,
         userId,
       };
@@ -50,7 +50,7 @@ export class FileService {
 
   public async getFilesByUser(userId: string): Promise<IFile[]> {
     try {
-      return await File.find({ userId });
+      return await File.find({ userId }).sort({ createdAt: -1 });
     } catch (error) {
       throw new HttpException(500, "Error retrieving files");
     }
