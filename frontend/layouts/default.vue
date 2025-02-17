@@ -3,24 +3,24 @@
     <v-main>
       <v-container>
         <Header />
-        <div v-if="isLoading">
-          <v-row justify="center" align="center">
-            <v-progress-circular
-              indeterminate
-              color="primary"
-              class="mt-4"
-            ></v-progress-circular>
-          </v-row>
-        </div>
-        <div v-else>
-          <client-only>
+        <client-only>
+          <div v-if="isLoading">
+            <v-row justify="center" align="center">
+              <v-progress-circular
+                indeterminate
+                color="primary"
+                class="mt-4"
+              ></v-progress-circular>
+            </v-row>
+          </div>
+          <div v-else>
             <Login v-if="!isLoggedIn" />
             <div v-else>
               <FileUpload />
               <FileList class="mt-4" />
             </div>
-          </client-only>
-        </div>
+          </div>
+        </client-only>
       </v-container>
     </v-main>
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" top>
@@ -37,29 +37,11 @@ export default {
       isLoading: true,
     };
   },
-  async mounted() {
+  async beforeMount() {
     try {
-      console.log("Starting auth initialization...");
-      console.log("Current auth state:", {
-        token: this.$store.state.auth.token,
-        email: this.$store.state.auth.email,
-      });
-
       if (process.client) {
-        console.log("localStorage values:", {
-          token: localStorage.getItem("token"),
-          email: localStorage.getItem("email"),
-        });
+        await this.$store.dispatch("auth/initAuth");
       }
-
-      await this.$store.dispatch("auth/initAuth");
-
-      console.log("After initialization auth state:", {
-        token: this.$store.state.auth.token,
-        email: this.$store.state.auth.email,
-      });
-
-      console.log("isLoggedIn:", this.isLoggedIn);
     } catch (error) {
       console.error("Error initializing auth:", error);
     } finally {
