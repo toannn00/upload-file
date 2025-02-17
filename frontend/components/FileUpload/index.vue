@@ -8,7 +8,6 @@
             :loading="loading"
             accept="*/*"
             label="Select a file"
-            prepend-icon="mdi-file"
             :rules="[rules.maxSize]"
             @change="onFileChange"
           ></v-file-input>
