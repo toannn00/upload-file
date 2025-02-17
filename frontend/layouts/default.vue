@@ -39,12 +39,27 @@ export default {
   },
   async created() {
     try {
-      console.log("Initializing auth...");
-      await this.$store.dispatch("auth/initAuth");
-      console.log("Auth state:", {
+      console.log("Starting auth initialization...");
+      console.log("Current auth state:", {
         token: this.$store.state.auth.token,
         email: this.$store.state.auth.email,
       });
+
+      if (process.client) {
+        console.log("localStorage values:", {
+          token: localStorage.getItem("token"),
+          email: localStorage.getItem("email"),
+        });
+      }
+
+      await this.$store.dispatch("auth/initAuth");
+
+      console.log("After initialization auth state:", {
+        token: this.$store.state.auth.token,
+        email: this.$store.state.auth.email,
+      });
+
+      console.log("isLoggedIn:", this.isLoggedIn);
     } catch (error) {
       console.error("Error initializing auth:", error);
     } finally {
