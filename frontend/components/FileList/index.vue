@@ -37,7 +37,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { FileData } from "~/types/api";
-import "~/types/vue-augmentation";
+import { FileService } from "~/services/file.service";
 
 @Component({
   name: "FileList",
@@ -45,6 +45,11 @@ import "~/types/vue-augmentation";
 export default class FileList extends Vue {
   private files: FileData[] = [];
   private loading = false;
+  private fileService!: FileService;
+
+  created(): void {
+    this.fileService = new FileService(this.$axios);
+  }
 
   mounted(): void {
     this.fetchFiles();
@@ -54,11 +59,7 @@ export default class FileList extends Vue {
     this.loading = true;
     try {
       const token = this.$store.state.auth.token;
-      const response = await this.$axios.$get("/api/files", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await this.fileService.fetchFiles(token);
 
       if (response.success) {
         this.files = response.data.files;

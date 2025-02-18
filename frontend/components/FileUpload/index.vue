@@ -29,9 +29,9 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { MAX_FILE_SIZE } from "~/constants";
-import { FileRules, FileListComponent, UploadResponse } from "~/types/api";
-import "~/types/vue-augmentation";
+import { ACCEPTED_MIME_TYPES, MAX_FILE_SIZE } from "~/constants";
+import { FileRules, FileListComponent } from "~/types/api";
+import { FileService } from "~/services/file.service";
 
 @Component({
   name: "FileUpload",
@@ -39,6 +39,11 @@ import "~/types/vue-augmentation";
 export default class FileUpload extends Vue {
   private file: File | null = null;
   private loading = false;
+  private fileService!: FileService;
+
+  created() {
+    this.fileService = new FileService(this.$axios);
+  }
 
   private rules: FileRules = {
     maxSize: (file: File | null) => {
@@ -49,7 +54,11 @@ export default class FileUpload extends Vue {
       );
     },
     acceptedExtention: (file: File | null) => {
-      return !file || file.type.includes("image") || "File should be an image";
+      return (
+        !file ||
+        ACCEPTED_MIME_TYPES.includes(file.type) ||
+        "File should be an image"
+      );
     },
   };
 
@@ -58,7 +67,7 @@ export default class FileUpload extends Vue {
   }
 
   get isValidFileExtention(): boolean {
-    return !!this.file && this.file.type.includes("image");
+    return !!this.file && ACCEPTED_MIME_TYPES.includes(this.file.type);
   }
 
   onFileChange(file: File | null): void {
@@ -70,20 +79,8 @@ export default class FileUpload extends Vue {
 
     this.loading = true;
     try {
-      const formData = new FormData();
-      formData.append("file", this.file);
-
       const token = this.$store.state.auth.token;
-      const response = await this.$axios.$post<UploadResponse>(
-        "/api/files/upload",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await this.fileService.uploadFile(this.file, token);
 
       if (response?.success) {
         this.$store.dispatch("auth/showMessage", {
