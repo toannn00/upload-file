@@ -1,6 +1,6 @@
 # Image Uploader
 
-A modern web application for uploading and managing images, built with Nuxt 2 and Express.js.
+A modern web application for uploading and managing images, built with Nuxt 2, Vuetify, and Express.js.
 
 ## Live Demo
 
@@ -8,7 +8,7 @@ A modern web application for uploading and managing images, built with Nuxt 2 an
 
 ## Introduction
 
-Image Uploader is a full-stack web application that allows users to upload, store, and manage their images. The frontend is built with Nuxt 2 (Vue.js framework) for a smooth user experience, while the backend uses Express.js for robust API handling. The application uses MongoDB for data storage and Cloudinary for image hosting.
+Image Uploader is a full-stack web application that allows users to upload, store, and manage their images. The frontend is built with Nuxt 2 (Vue.js framework), and Vuetify for a smooth user experience, while the backend uses Express.js for robust API handling. The application uses MongoDB for data storage and Cloudinary for image hosting.
 
 ## Features
 
