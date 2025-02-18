@@ -7,19 +7,19 @@
             v-model="file"
             :loading="loading"
             accept="*/*"
-            label="Select a file"
-            :rules="[rules.maxSize]"
+            label="Select an image"
+            :rules="[rules.maxSize, rules.acceptedExtention]"
             @change="onFileChange"
           ></v-file-input>
           <v-btn
             block
             color="primary"
-            :disabled="!file || !isValidFileSize"
+            :disabled="!file || !isValidFileSize || !isValidFileExtention"
             :loading="loading"
             @click="handleUpload"
             class="mt-4"
           >
-            Upload File
+            Upload Image
           </v-btn>
         </v-card-text>
       </v-card>
@@ -48,10 +48,17 @@ export default class FileUpload extends Vue {
         "File size should be less than 5MB"
       );
     },
+    acceptedExtention: (file: File | null) => {
+      return !file || file.type.includes("image") || "File should be an image";
+    },
   };
 
   get isValidFileSize(): boolean {
     return !!this.file && this.file.size <= MAX_FILE_SIZE;
+  }
+
+  get isValidFileExtention(): boolean {
+    return !!this.file && this.file.type.includes("image");
   }
 
   onFileChange(file: File | null): void {

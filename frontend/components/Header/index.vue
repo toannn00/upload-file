@@ -1,8 +1,8 @@
 <template>
   <div class="text-center my-8">
-    <h1 class="text-h2 font-weight-bold">File Uploader</h1>
+    <h1 class="text-h2 font-weight-bold">Image Uploader</h1>
     <p class="text-subtitle-1 mt-2">
-      A tool to upload files and get a link to them.
+      A tool to upload images and get a link to them.
     </p>
     <div v-if="email" class="mt-4">
       <p class="text-subtitle-2">

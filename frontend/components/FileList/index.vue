@@ -2,7 +2,7 @@
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="6">
       <v-card class="elevation-12">
-        <v-card-title>Your Files</v-card-title>
+        <v-card-title>Your Images</v-card-title>
         <v-card-text>
           <v-progress-linear
             v-if="loading"

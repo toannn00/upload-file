@@ -11,6 +11,7 @@ export interface FileListComponent extends Vue {
 
 export interface FileRules {
   maxSize: (file: File | null) => boolean | string;
+  acceptedExtention: (file: File | null) => boolean | string;
 }
 
 export interface FileData {
