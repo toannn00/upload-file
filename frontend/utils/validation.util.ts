@@ -9,6 +9,8 @@ export const passwordRules = [
   (password: string) => !!password || "Password is required",
   (password: string) =>
     password.length >= 6 || "Password must be at least 6 characters",
+  (password: string) =>
+    password.length <= 20 || "Password must be at most 20 characters",
 ];
 
 export const fileRules = {
