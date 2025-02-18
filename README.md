@@ -4,7 +4,7 @@ A modern web application for uploading and managing images, built with Nuxt 2 an
 
 ## Live Demo
 
-[https://upload-file-topaz.vercel.app/](https://upload-file-topaz.vercel.app/)
+[Image Uploader](https://upload-file-topaz.vercel.app/) 👈
 
 ## Introduction
 
@@ -14,7 +14,7 @@ Image Uploader is a full-stack web application that allows users to upload, stor
 
 - User authentication (login/register)
 - Image upload with size and type validation
-- Image listing with preview
+- Image listing
 - Secure file storage using Cloudinary
 - Responsive design
 - Real-time feedback with snackbar notifications
@@ -99,6 +99,28 @@ The application will be available at:
 
 - Frontend: http://localhost:3000
 - Backend: http://localhost:3001
+
+## Usage
+
+### Homepage
+
+New users can register or existing users can log in using their email and password through the login form.
+
+<img src="https://i.imgur.com/IXN2Elf.png" width="600" />
+
+### Upload an image
+
+- Users can upload images by selecting a file from their device and clicking the "Upload Image" button. The application will validate the file size and type before uploading it to the server.
+
+<img src="https://i.imgur.com/e2MfltU.png" width="600" />
+
+- Select an image to upload
+
+<img src="https://i.imgur.com/pdByIs2.png" width="600" />
+
+- Uploaded successfully, the image will be displayed in the list of images
+
+<img src="https://i.imgur.com/G3EeplL.png" width="600" />
 
 ## License
 
