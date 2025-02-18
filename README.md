@@ -1,2 +1,105 @@
-# upload-file
-A web application that allows you to do file upload using Nuxt and Express.js
+# Image Uploader
+
+A modern web application for uploading and managing images, built with Nuxt 2 and Express.js.
+
+## Live Demo
+
+[https://upload-file-topaz.vercel.app/](https://upload-file-topaz.vercel.app/)
+
+## Introduction
+
+Image Uploader is a full-stack web application that allows users to upload, store, and manage their images. The frontend is built with Nuxt 2 (Vue.js framework) for a smooth user experience, while the backend uses Express.js for robust API handling. The application uses MongoDB for data storage and Cloudinary for image hosting.
+
+## Features
+
+- User authentication (login/register)
+- Image upload with size and type validation
+- Image listing with preview
+- Secure file storage using Cloudinary
+- Responsive design
+- Real-time feedback with snackbar notifications
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- [Node.js](https://nodejs.org/en/download/) 16.20.2 (LTS) which includes [Node Package Manager](https://www.npmjs.com/get-npm)
+- [MongoDB](https://www.mongodb.com/download-center/community)
+- [Git](https://git-scm.com/)
+- [Yarn](https://classic.yarnpkg.com/en/docs/install)
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/toannn00/upload-file
+```
+
+2. Install backend dependencies:
+
+```bash
+cd backend
+npm install
+```
+
+3. Install frontend dependencies:
+
+```bash
+cd frontend
+yarn install
+```
+
+## Environment Variables
+
+### Backend
+
+Create a `.env` file in the backend directory with the following variables:
+
+```env
+MONGODB_URI=mongodb://localhost:27017/file-upload
+JWT_SECRET=your_jwt_secret
+PORT=3001
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+```
+
+To get your Cloudinary credentials:
+
+1. Sign up for a free account at [Cloudinary](https://cloudinary.com/users/register/free)
+2. Navigate to your Dashboard
+3. Copy your Cloud Name, API Key, and API Secret
+
+### Frontend
+
+Create a `.env` file in the frontend directory with:
+
+```env
+API_URL=http://localhost:3001
+```
+
+## Running the Application for Development
+
+1. Start the backend server:
+
+```bash
+cd backend
+npm run dev
+```
+
+2. Start the frontend development server:
+
+```bash
+cd frontend
+yarn dev
+```
+
+The application will be available at:
+
+- Frontend: http://localhost:3000
+- Backend: http://localhost:3001
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
