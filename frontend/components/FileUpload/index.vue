@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { MAX_FILE_SIZE } from "~/constants";
+import { ACCEPTED_MIME_TYPES, MAX_FILE_SIZE } from "~/constants";
 import { FileRules, FileListComponent, UploadResponse } from "~/types/api";
 import "~/types/vue-augmentation";
 
@@ -49,7 +49,11 @@ export default class FileUpload extends Vue {
       );
     },
     acceptedExtention: (file: File | null) => {
-      return !file || file.type.includes("image") || "File should be an image";
+      return (
+        !file ||
+        ACCEPTED_MIME_TYPES.includes(file.type) ||
+        "File should be an image"
+      );
     },
   };
 
@@ -58,7 +62,7 @@ export default class FileUpload extends Vue {
   }
 
   get isValidFileExtention(): boolean {
-    return !!this.file && this.file.type.includes("image");
+    return !!this.file && ACCEPTED_MIME_TYPES.includes(this.file.type);
   }
 
   onFileChange(file: File | null): void {
