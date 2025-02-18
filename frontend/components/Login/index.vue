@@ -59,74 +59,75 @@
   </v-row>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+import "~/types/vue-augmentation";
+
+@Component({
   name: "Login",
-  data() {
-    return {
-      valid: false,
-      loading: false,
-      showPassword: false,
-      email: "",
-      password: "",
-      error: null,
-      successMessage: null,
-      emailRules: [
-        (v) => !!v || "Email is required",
-        (v) => /.+@.+\..+/.test(v) || "Email must be valid",
-      ],
-      passwordRules: [
-        (v) => !!v || "Password is required",
-        (v) => v.length >= 6 || "Password must be at least 6 characters",
-      ],
-    };
-  },
-  computed: {
-    isLoggedIn() {
-      return !!this.$store.state.auth.token;
-    },
-  },
-  methods: {
-    async handleSubmit() {
-      if (!this.$refs.form.validate()) return;
+})
+export default class Login extends Vue {
+  private valid = false;
+  private loading = false;
+  private email = "";
+  private password = "";
+  private error: string | null = null;
+  private successMessage: string | null = null;
 
-      this.loading = true;
-      try {
-        const response = await this.$axios.$post("/api/auth/authenticate", {
+  private emailRules = [
+    (email: string) => !!email || "Email is required",
+    (email: string) => /.+@.+\..+/.test(email) || "Email must be valid",
+  ];
+
+  private passwordRules = [
+    (password: string) => !!password || "Password is required",
+    (password: string) =>
+      password.length >= 6 || "Password must be at least 6 characters",
+  ];
+
+  get isLoggedIn(): boolean {
+    return !!this.$store.state.auth.token;
+  }
+
+  async handleSubmit(): Promise<void> {
+    if (!this.$refs.form || !(this.$refs.form as any).validate()) return;
+
+    this.loading = true;
+    try {
+      const response = await this.$axios.$post("/api/auth/authenticate", {
+        email: this.email,
+        password: this.password,
+      });
+
+      if (response.success && response.data.token) {
+        await this.$store.dispatch("auth/login", {
           email: this.email,
-          password: this.password,
+          token: response.data.token,
         });
-
-        if (response.success && response.data.token) {
-          await this.$store.dispatch("auth/login", {
-            email: this.email,
-            token: response.data.token,
-          });
-          this.$store.dispatch("auth/showMessage", {
-            message: "Successfully logged in!",
-            color: "success",
-          });
-          if (this.$refs.form) {
-            this.$refs.form.reset();
-          }
+        this.$store.dispatch("auth/showMessage", {
+          message: "Successfully logged in!",
+          color: "success",
+        });
+        if (this.$refs.form) {
+          (this.$refs.form as any).reset();
         }
-      } catch (error) {
-        console.error("Authentication error:", error);
-        if (error.response) {
-          this.$store.dispatch("auth/showMessage", {
-            message: error.response.data.message || "Authentication failed",
-            color: "error",
-          });
-        } else {
-          this.$store.dispatch("auth/showMessage", {
-            message: "An error occurred while trying to authenticate",
-            color: "error",
-          });
-        }
-      } finally {
-        this.loading = false;
       }
-    },
-  },
-};
+    } catch (error: any) {
+      console.error("Authentication error:", error);
+      if (error.response) {
+        this.$store.dispatch("auth/showMessage", {
+          message: error.response.data.message || "Authentication failed",
+          color: "error",
+        });
+      } else {
+        this.$store.dispatch("auth/showMessage", {
+          message: "An error occurred while trying to authenticate",
+          color: "error",
+        });
+      }
+    } finally {
+      this.loading = false;
+    }
+  }
+}
 </script>

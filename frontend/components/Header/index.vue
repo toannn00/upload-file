@@ -1,8 +1,8 @@
 <template>
   <div class="text-center my-8">
-    <h1 class="text-h2 font-weight-bold">File Uploader</h1>
+    <h1 class="text-h2 font-weight-bold">Image Uploader</h1>
     <p class="text-subtitle-1 mt-2">
-      A tool to upload files and get a link to them.
+      A tool to upload images and get a link to them.
     </p>
     <div v-if="email" class="mt-4">
       <p class="text-subtitle-2">
@@ -13,18 +13,19 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+
+@Component({
   name: "Header",
-  computed: {
-    email() {
-      return this.$store.state.auth.email;
-    },
-  },
-  methods: {
-    logout() {
-      this.$store.dispatch("auth/logout");
-    },
-  },
-};
+})
+export default class Header extends Vue {
+  get email(): string | null {
+    return this.$store.state.auth.email;
+  }
+
+  logout(): void {
+    this.$store.dispatch("auth/logout");
+  }
+}
 </script>
