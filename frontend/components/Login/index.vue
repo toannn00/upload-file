@@ -62,6 +62,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { AuthService } from "~/services/auth.service";
+import { emailRules, passwordRules } from "~/utils/validation.util";
 
 @Component({
   name: "Login",
@@ -79,16 +80,8 @@ export default class Login extends Vue {
     this.authService = new AuthService(this.$axios);
   }
 
-  private emailRules = [
-    (email: string) => !!email || "Email is required",
-    (email: string) => /.+@.+\..+/.test(email) || "Email must be valid",
-  ];
-
-  private passwordRules = [
-    (password: string) => !!password || "Password is required",
-    (password: string) =>
-      password.length >= 6 || "Password must be at least 6 characters",
-  ];
+  private emailRules = emailRules;
+  private passwordRules = passwordRules;
 
   get isLoggedIn(): boolean {
     return !!this.$store.state.auth.token;
