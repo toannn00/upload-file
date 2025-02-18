@@ -110,15 +110,15 @@ New users can register or existing users can log in using their email and passwo
 
 ### Upload an image
 
-- Users can upload images by selecting a file from their device and clicking the "Upload Image" button. The application will validate the file size and type before uploading it to the server.
+Users can upload images by selecting a file from their device and clicking the "Upload Image" button. The application will validate the file size and type before uploading it to the server.
 
 <img src="https://i.imgur.com/e2MfltU.png" width="600" />
 
-- Select an image to upload
+Select an image to upload
 
 <img src="https://i.imgur.com/pdByIs2.png" width="600" />
 
-- Uploaded successfully, the image will be displayed in the list of images
+Uploaded successfully, the image will be displayed in the list of images
 
 <img src="https://i.imgur.com/G3EeplL.png" width="600" />
 
