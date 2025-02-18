@@ -8,7 +8,7 @@
             :loading="loading"
             accept="*/*"
             label="Select an image"
-            :rules="[fileRules.maxSize, fileRules.acceptedExtention]"
+            :rules="[fileRules.acceptedExtention, fileRules.maxSize]"
             @change="onFileChange"
           ></v-file-input>
           <v-btn
