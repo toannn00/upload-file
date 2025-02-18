@@ -5,6 +5,13 @@ export interface UploadResponse {
   };
 }
 
+export interface AuthResponse {
+  success: boolean;
+  data?: {
+    token: string;
+  };
+}
+
 export interface FileListComponent extends Vue {
   fetchFiles(): void;
 }

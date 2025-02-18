@@ -61,7 +61,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import "~/types/vue-augmentation";
+import { AuthService } from "~/services/auth.service";
 
 @Component({
   name: "Login",
@@ -73,6 +73,11 @@ export default class Login extends Vue {
   private password = "";
   private error: string | null = null;
   private successMessage: string | null = null;
+  private authService!: AuthService;
+
+  created() {
+    this.authService = new AuthService(this.$axios);
+  }
 
   private emailRules = [
     (email: string) => !!email || "Email is required",
@@ -94,12 +99,12 @@ export default class Login extends Vue {
 
     this.loading = true;
     try {
-      const response = await this.$axios.$post("/api/auth/authenticate", {
-        email: this.email,
-        password: this.password,
-      });
+      const response = await this.authService.authenticate(
+        this.email,
+        this.password
+      );
 
-      if (response.success && response.data.token) {
+      if (response.success && response.data?.token) {
         await this.$store.dispatch("auth/login", {
           email: this.email,
           token: response.data.token,
