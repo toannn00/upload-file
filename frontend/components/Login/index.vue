@@ -1,24 +1,6 @@
 <template>
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="6">
-      <v-alert
-        v-if="error"
-        type="error"
-        dismissible
-        @input="error = null"
-        class="mb-4"
-      >
-        {{ error }}
-      </v-alert>
-      <v-alert
-        v-if="successMessage"
-        type="success"
-        dismissible
-        @input="successMessage = null"
-        class="mb-4"
-      >
-        {{ successMessage }}
-      </v-alert>
       <v-card class="elevation-12">
         <v-card-text>
           <v-form ref="form" v-model="valid" lazy-validation>
@@ -72,8 +54,6 @@ export default class Login extends Vue {
   private loading = false;
   private email = "";
   private password = "";
-  private error: string | null = null;
-  private successMessage: string | null = null;
   private authService!: AuthService;
 
   created() {
@@ -83,13 +63,7 @@ export default class Login extends Vue {
   private emailRules = emailRules;
   private passwordRules = passwordRules;
 
-  get isLoggedIn(): boolean {
-    return !!this.$store.state.auth.token;
-  }
-
   async handleSubmit(): Promise<void> {
-    if (!this.$refs.form || !(this.$refs.form as any).validate()) return;
-
     this.loading = true;
     try {
       const response = await this.authService.authenticate(
@@ -106,9 +80,6 @@ export default class Login extends Vue {
           message: "Successfully logged in!",
           color: "success",
         });
-        if (this.$refs.form) {
-          (this.$refs.form as any).reset();
-        }
       }
     } catch (error: any) {
       console.error("Authentication error:", error);
