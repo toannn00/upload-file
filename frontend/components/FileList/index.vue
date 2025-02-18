@@ -36,19 +36,17 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { FileData } from "~/types/api";
-import { FileService } from "~/services/file.service";
+import { formatFileSize } from "~/utils/file.util";
 
 @Component({
   name: "FileList",
 })
 export default class FileList extends Vue {
-  private files: FileData[] = [];
   private loading = false;
-  private fileService!: FileService;
+  private formatFileSize = (bytes: number): string => formatFileSize(bytes);
 
-  created(): void {
-    this.fileService = new FileService(this.$axios);
+  get files() {
+    return this.$store.getters["files/getFiles"];
   }
 
   mounted(): void {
@@ -59,11 +57,7 @@ export default class FileList extends Vue {
     this.loading = true;
     try {
       const token = this.$store.state.auth.token;
-      const response = await this.fileService.fetchFiles(token);
-
-      if (response.success) {
-        this.files = response.data.files;
-      }
+      await this.$store.dispatch("files/fetchFiles", token);
     } catch (error: any) {
       console.error("Error fetching files:", error);
       this.$store.dispatch("auth/showMessage", {
@@ -73,14 +67,6 @@ export default class FileList extends Vue {
     } finally {
       this.loading = false;
     }
-  }
-
-  formatFileSize(bytes: number): string {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   }
 }
 </script>

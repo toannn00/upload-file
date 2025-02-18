@@ -8,7 +8,7 @@
             :loading="loading"
             accept="*/*"
             label="Select an image"
-            :rules="[rules.maxSize, rules.acceptedExtention]"
+            :rules="[fileRules.maxSize, fileRules.acceptedExtention]"
             @change="onFileChange"
           ></v-file-input>
           <v-btn
@@ -30,8 +30,8 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { ACCEPTED_MIME_TYPES, MAX_FILE_SIZE } from "~/constants";
-import { FileRules, FileListComponent } from "~/types/api";
 import { FileService } from "~/services/file.service";
+import { fileRules } from "~/utils/validation.util";
 
 @Component({
   name: "FileUpload",
@@ -40,27 +40,11 @@ export default class FileUpload extends Vue {
   private file: File | null = null;
   private loading = false;
   private fileService!: FileService;
+  private fileRules = fileRules;
 
   created() {
     this.fileService = new FileService(this.$axios);
   }
-
-  private rules: FileRules = {
-    maxSize: (file: File | null) => {
-      return (
-        !file ||
-        file.size <= MAX_FILE_SIZE ||
-        "File size should be less than 5MB"
-      );
-    },
-    acceptedExtention: (file: File | null) => {
-      return (
-        !file ||
-        ACCEPTED_MIME_TYPES.includes(file.type) ||
-        "File should be an image"
-      );
-    },
-  };
 
   get isValidFileSize(): boolean {
     return !!this.file && this.file.size <= MAX_FILE_SIZE;
@@ -89,14 +73,7 @@ export default class FileUpload extends Vue {
         });
         this.file = null;
 
-        const fileListComponent = this.$parent?.$children.find(
-          (child): child is FileListComponent =>
-            child.$options.name === "FileList"
-        );
-
-        if (fileListComponent?.fetchFiles) {
-          fileListComponent.fetchFiles();
-        }
+        await this.$store.dispatch("files/fetchFiles", token);
       }
     } catch (error: any) {
       console.error("Upload error:", error);
