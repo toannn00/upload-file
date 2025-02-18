@@ -122,6 +122,145 @@ New users can register or existing users can log in using their email and passwo
 
 <img src="https://i.imgur.com/G3EeplL.png" width="600" />
 
+## API Documentation
+
+### Base URL
+
+```bash
+http://localhost:3001/api
+```
+
+### Authentication
+
+All protected endpoints require a Bearer token:
+
+```bash
+Authorization: Bearer <your_jwt_token>
+```
+
+### Endpoints
+
+#### 1. Authenticate User
+
+Login or register a user.
+
+- **URL**: `/auth/authenticate`
+- **Method**: `POST`
+- **Body**:
+
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+- **Response (200)**:
+
+```json
+{
+  "success": true,
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5..."
+  }
+}
+```
+
+#### 2. Upload File
+
+Upload an image file.
+
+- **URL**: `/files/upload`
+- **Method**: `POST`
+- **Auth**: Required
+- **Body**: `multipart/form-data`
+  - `file`: Image file
+- **Limits**:
+  - Max size: 5MB
+  - Types: JPEG, PNG, GIF, WebP, SVG
+- **Response (201)**:
+
+```json
+{
+  "success": true,
+  "data": {
+    "file": {
+      "fileName": "image_123.jpg",
+      "originalName": "my_image.jpg",
+      "url": "https://cloudinary.com/...",
+      "format": "jpg",
+      "size": 1048576
+    }
+  }
+}
+```
+
+#### 3. Get User Files
+
+Fetch all user's files.
+
+- **URL**: `/files`
+- **Method**: `GET`
+- **Auth**: Required
+- **Response (200)**:
+
+```json
+{
+  "success": true,
+  "data": {
+    "files": [
+      {
+        "fileName": "image_123.jpg",
+        "originalName": "my_image.jpg",
+        "url": "https://cloudinary.com/...",
+        "format": "jpg",
+        "size": 1048576
+      }
+    ]
+  }
+}
+```
+
+### Error Responses
+
+All endpoints may return:
+
+- **401**: Authentication failed
+
+```json
+{
+  "success": false,
+  "error": {
+    "message": "Authentication token required",
+    "code": 401
+  }
+}
+```
+
+- **400**: Invalid request
+
+```json
+{
+  "success": false,
+  "error": {
+    "message": "File size exceeds 5MB limit",
+    "code": 400
+  }
+}
+```
+
+- **500**: Server error
+
+```json
+{
+  "success": false,
+  "error": {
+    "message": "Internal server error",
+    "code": 500
+  }
+}
+```
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
