@@ -79,6 +79,18 @@ export default class FileUpload extends Vue {
       }
     } catch (error: any) {
       console.error("Upload error:", error);
+
+      if (error.response?.status === 401) {
+        this.$store.dispatch(STORE_ACTIONS.AUTH.LOGOUT);
+
+        this.$store.dispatch(STORE_ACTIONS.SNACKBAR.SHOW_MESSAGE, {
+          message: ERROR_MESSAGES.SESSION_EXPIRED,
+          color: "error",
+        });
+
+        return;
+      }
+
       this.$store.dispatch(STORE_ACTIONS.SNACKBAR.SHOW_MESSAGE, {
         message: error.response?.data?.message || ERROR_MESSAGES.FILE_UPLOAD,
         color: "error",

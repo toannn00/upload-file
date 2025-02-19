@@ -62,6 +62,18 @@ export default class FileList extends Vue {
       await this.$store.dispatch(STORE_ACTIONS.FILES.FETCH, token);
     } catch (error: any) {
       console.error("Error fetching files:", error);
+
+      if (error.response?.status === 401) {
+        this.$store.dispatch(STORE_ACTIONS.AUTH.LOGOUT);
+
+        this.$store.dispatch(STORE_ACTIONS.SNACKBAR.SHOW_MESSAGE, {
+          message: ERROR_MESSAGES.SESSION_EXPIRED,
+          color: "error",
+        });
+
+        return;
+      }
+
       this.$store.dispatch(STORE_ACTIONS.SNACKBAR.SHOW_MESSAGE, {
         message: error.response?.data?.message || ERROR_MESSAGES.FILE_FETCH,
         color: "error",
