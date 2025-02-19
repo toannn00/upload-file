@@ -1,13 +1,8 @@
-import { AuthState, AuthPayload, MessagePayload } from "~/types/auth";
+import { AuthState, AuthPayload } from "~/types/auth";
 
 export const state = (): AuthState => ({
   email: null,
   token: null,
-  snackbar: {
-    show: false,
-    message: "",
-    color: "success",
-  },
 });
 
 export const mutations = {
@@ -18,17 +13,6 @@ export const mutations = {
   clearAuth(state: AuthState): void {
     state.email = null;
     state.token = null;
-  },
-  showSnackbar(
-    state: AuthState,
-    { message, color = "success" }: MessagePayload
-  ): void {
-    state.snackbar.show = true;
-    state.snackbar.message = message;
-    state.snackbar.color = color;
-  },
-  hideSnackbar(state: AuthState): void {
-    state.snackbar.show = false;
   },
 };
 
@@ -46,10 +30,5 @@ export const actions = {
       localStorage.removeItem("email");
     }
     commit("clearAuth");
-  },
-  showMessage({ commit }: { commit: Function }, payload: MessagePayload): void {
-    const { message, color = "success" } = payload;
-    commit("showSnackbar", { message, color });
-    setTimeout(() => commit("hideSnackbar"), 2000);
   },
 };

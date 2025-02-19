@@ -13,15 +13,15 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
-import { SnackbarState } from '~/types/auth'
+import { Vue, Component } from "vue-property-decorator";
+import { SnackbarState } from "~/types/auth";
 
 @Component({
-  name: "DefaultLayout"
+  name: "DefaultLayout",
 })
 export default class DefaultLayout extends Vue {
   get snackbar(): SnackbarState {
-    return this.$store.state.auth.snackbar
+    return this.$store.state.snackbar;
   }
 }
 </script>

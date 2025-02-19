@@ -7,7 +7,6 @@ export interface SnackbarState {
 export interface AuthState {
   email: string | null;
   token: string | null;
-  snackbar: SnackbarState;
 }
 
 export interface AuthPayload {
