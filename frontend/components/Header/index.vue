@@ -15,6 +15,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { STORE_ACTIONS } from "~/constants/store";
 
 @Component({
   name: "Header",
@@ -25,7 +26,7 @@ export default class Header extends Vue {
   }
 
   logout(): void {
-    this.$store.dispatch("auth/logout");
+    this.$store.dispatch(STORE_ACTIONS.AUTH.LOGOUT);
   }
 }
 </script>

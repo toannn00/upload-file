@@ -37,6 +37,8 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { formatFileSize } from "~/utils/file.util";
+import { ERROR_MESSAGES } from "~/constants/messages";
+import { STORE_ACTIONS } from "~/constants/store";
 
 @Component({
   name: "FileList",
@@ -57,11 +59,23 @@ export default class FileList extends Vue {
     this.loading = true;
     try {
       const token = this.$store.state.auth.token;
-      await this.$store.dispatch("files/fetchFiles", token);
+      await this.$store.dispatch(STORE_ACTIONS.FILES.FETCH, token);
     } catch (error: any) {
       console.error("Error fetching files:", error);
-      this.$store.dispatch("auth/showMessage", {
-        message: error.response?.data?.message || "Error fetching files",
+
+      if (error.response?.status === 401) {
+        this.$store.dispatch(STORE_ACTIONS.AUTH.LOGOUT);
+
+        this.$store.dispatch(STORE_ACTIONS.SNACKBAR.SHOW_MESSAGE, {
+          message: ERROR_MESSAGES.SESSION_EXPIRED,
+          color: "error",
+        });
+
+        return;
+      }
+
+      this.$store.dispatch(STORE_ACTIONS.SNACKBAR.SHOW_MESSAGE, {
+        message: error.response?.data?.message || ERROR_MESSAGES.FILE_FETCH,
         color: "error",
       });
     } finally {
