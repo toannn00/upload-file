@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { STORE_ACTIONS } from "~/constants/store";
+import { STORE } from "~/constants/store";
 
 @Component({
   name: "HomePage",
@@ -48,7 +48,7 @@ export default class HomePage extends Vue {
         const email = localStorage.getItem("email");
 
         if (token && email) {
-          this.$store.dispatch(STORE_ACTIONS.AUTH.LOGIN, { token, email });
+          this.$store.dispatch(STORE.ACTIONS.AUTH.LOGIN, { token, email });
         }
       }
     } finally {

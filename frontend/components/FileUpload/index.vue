@@ -30,10 +30,9 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { ACCEPTED_MIME_TYPES, MAX_FILE_SIZE } from "~/constants";
-import { SUCCESS_MESSAGES, ERROR_MESSAGES } from "~/constants/messages";
-import { STORE_ACTIONS } from "~/constants/store";
-import { FileService } from "~/services/file.service";
+import { STORE } from "~/constants/store";
 import { fileRules } from "~/utils/validation.util";
+import { SUCCESS_MESSAGES, ERROR_MESSAGES } from "~/constants/messages";
 
 @Component({
   name: "FileUpload",
@@ -41,12 +40,7 @@ import { fileRules } from "~/utils/validation.util";
 export default class FileUpload extends Vue {
   private file: File | null = null;
   private loading = false;
-  private fileService!: FileService;
   private fileRules = fileRules;
-
-  created() {
-    this.fileService = new FileService(this.$axios);
-  }
 
   get isValidFileSize(): boolean {
     return !!this.file && this.file.size <= MAX_FILE_SIZE;
@@ -66,33 +60,26 @@ export default class FileUpload extends Vue {
     this.loading = true;
     try {
       const token = this.$store.state.auth.token;
-      const response = await this.fileService.uploadFile(this.file, token);
 
-      if (response?.success) {
-        this.$store.dispatch(STORE_ACTIONS.SNACKBAR.SHOW_MESSAGE, {
-          message: SUCCESS_MESSAGES.FILE_UPLOAD,
-          color: "success",
-        });
-        this.file = null;
+      await this.$store.dispatch(STORE.ACTIONS.FILES.UPLOAD, {
+        file: this.file,
+        token,
+      });
 
-        await this.$store.dispatch(STORE_ACTIONS.FILES.FETCH, token);
-      }
+      this.$store.dispatch(STORE.ACTIONS.SNACKBAR.SHOW_MESSAGE, {
+        message: SUCCESS_MESSAGES.FILE_UPLOAD,
+        color: "success",
+      });
+
+      this.file = null;
     } catch (error: any) {
       console.error("Upload error:", error);
 
-      if (error.response?.status === 401) {
-        this.$store.dispatch(STORE_ACTIONS.AUTH.LOGOUT);
-
-        this.$store.dispatch(STORE_ACTIONS.SNACKBAR.SHOW_MESSAGE, {
-          message: ERROR_MESSAGES.SESSION_EXPIRED,
-          color: "error",
-        });
-
-        return;
-      }
-
-      this.$store.dispatch(STORE_ACTIONS.SNACKBAR.SHOW_MESSAGE, {
-        message: error.response?.data?.message || ERROR_MESSAGES.FILE_UPLOAD,
+      this.$store.dispatch(STORE.ACTIONS.SNACKBAR.SHOW_MESSAGE, {
+        message:
+          error.response?.status === 401
+            ? ERROR_MESSAGES.SESSION_EXPIRED
+            : ERROR_MESSAGES.FILE_UPLOAD,
         color: "error",
       });
     } finally {

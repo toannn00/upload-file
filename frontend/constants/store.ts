@@ -1,12 +1,21 @@
-export const STORE_ACTIONS = {
-  AUTH: {
-    LOGIN: "auth/login",
-    LOGOUT: "auth/logout",
+export const STORE = {
+  ACTIONS: {
+    AUTH: {
+      LOGIN: "auth/login",
+      LOGOUT: "auth/logout",
+      AUTHENTICATE: "auth/authenticate",
+    },
+    FILES: {
+      FETCH: "files/fetchFiles",
+      UPLOAD: "files/uploadFile",
+    },
+    SNACKBAR: {
+      SHOW_MESSAGE: "snackbar/showMessage",
+    },
   },
-  SNACKBAR: {
-    SHOW_MESSAGE: "snackbar/showMessage",
-  },
-  FILES: {
-    FETCH: "files/fetchFiles",
+  GETTERS: {
+    FILES: {
+      GET_FILES: "files/getFiles",
+    },
   },
 };

@@ -45,6 +45,6 @@ export class AuthService {
   }
 
   private generateToken(user: IUser): string {
-    return jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "1d" });
+    return jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "10s" });
   }
 }

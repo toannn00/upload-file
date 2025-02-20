@@ -1,9 +1,10 @@
 import { ActionTree, MutationTree, GetterTree } from "vuex";
-import { FileService } from "~/services/file.service";
+import { STORE } from "~/constants/store";
+import { FileData } from "~/types/api";
 
 interface FilesState {
   needsRefresh: boolean;
-  files: any[];
+  files: FileData[];
 }
 
 export const state = (): FilesState => ({
@@ -12,22 +13,40 @@ export const state = (): FilesState => ({
 });
 
 export const mutations: MutationTree<FilesState> = {
-  setFiles(state, files: any[]) {
+  setFiles(state, files: FileData[]) {
     state.files = files;
   },
 };
 
 export const actions: ActionTree<FilesState, any> = {
-  async fetchFiles({ commit }, token: string) {
+  async fetchFiles({ dispatch, commit }, token: string) {
     try {
-      const fileService = new FileService(this.$axios);
-      const response = await fileService.fetchFiles(token);
-
+      const response = await this.$fileService.fetchFiles(token);
       if (response.success) {
         commit("setFiles", response.data.files);
       }
     } catch (error: any) {
-      console.error("Error fetching files:", error);
+      if (error.response?.status === 401) {
+        dispatch(STORE.ACTIONS.AUTH.LOGOUT, null, { root: true });
+      }
+      throw error;
+    }
+  },
+
+  async uploadFile(
+    { dispatch },
+    { file, token }: { file: File; token: string }
+  ) {
+    try {
+      const response = await this.$fileService.uploadFile(file, token);
+
+      if (response?.success) {
+        await dispatch("fetchFiles", token);
+      }
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        dispatch(STORE.ACTIONS.AUTH.LOGOUT, null, { root: true });
+      }
       throw error;
     }
   },
