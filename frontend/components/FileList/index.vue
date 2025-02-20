@@ -20,7 +20,8 @@
                 </v-list-item-title>
                 <v-list-item-subtitle>
                   Format: {{ file.format }} | Size:
-                  {{ formatFileSize(file.size) }}
+                  {{ formatFileSize(file.size) }} |
+                  {{ formatDateTime(file.createdAt) }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -36,7 +37,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { formatFileSize } from "~/utils/file.util";
+import { formatFileSize, formatDateTime } from "~/utils/file.util";
 import { ERROR_MESSAGES } from "~/constants/messages";
 import { STORE_ACTIONS } from "~/constants/store";
 
@@ -46,6 +47,8 @@ import { STORE_ACTIONS } from "~/constants/store";
 export default class FileList extends Vue {
   private loading = false;
   private formatFileSize = (bytes: number): string => formatFileSize(bytes);
+  private formatDateTime = (date: Date | string): string =>
+    formatDateTime(date);
 
   get files() {
     return this.$store.getters["files/getFiles"];
