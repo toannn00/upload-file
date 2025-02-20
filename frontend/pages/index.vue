@@ -1,23 +1,19 @@
 <template>
   <div>
-    <client-only>
-      <div v-if="isMounted">
-        <v-row v-if="isLoading" justify="center" align="center">
-          <v-progress-circular
-            indeterminate
-            color="primary"
-            class="mt-4"
-          ></v-progress-circular>
-        </v-row>
-        <template v-else>
-          <Login v-if="!isLoggedIn" />
-          <template v-else>
-            <FileUpload />
-            <FileList class="mt-4" />
-          </template>
-        </template>
-      </div>
-    </client-only>
+    <v-row v-if="isLoading" justify="center" align="center">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        class="mt-4"
+      ></v-progress-circular>
+    </v-row>
+    <template v-else>
+      <Login v-if="!isLoggedIn" />
+      <template v-else>
+        <FileUpload />
+        <FileList class="mt-4" />
+      </template>
+    </template>
   </div>
 </template>
 
@@ -30,14 +26,12 @@ import { STORE_ACTIONS } from "~/constants/store";
 })
 export default class HomePage extends Vue {
   private isLoading = true;
-  private isMounted = false;
 
   get isLoggedIn(): boolean {
     return !!this.$store.state.auth.token;
   }
 
   mounted(): void {
-    this.isMounted = true;
     this.initAuth();
   }
 
