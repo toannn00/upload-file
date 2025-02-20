@@ -43,10 +43,9 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { AuthService } from "~/services/auth.service";
 import { emailRules, passwordRules } from "~/utils/validation.util";
+import { STORE } from "~/constants/store";
 import { SUCCESS_MESSAGES, ERROR_MESSAGES } from "~/constants/messages";
-import { STORE_ACTIONS } from "~/constants/store";
 
 @Component({
   name: "Login",
@@ -56,46 +55,29 @@ export default class Login extends Vue {
   private loading = false;
   private email = "";
   private password = "";
-  private authService!: AuthService;
-
-  created() {
-    this.authService = new AuthService(this.$axios);
-  }
-
   private emailRules = emailRules;
   private passwordRules = passwordRules;
 
   async handleSubmit(): Promise<void> {
     this.loading = true;
-    try {
-      const response = await this.authService.authenticate(
-        this.email,
-        this.password
-      );
 
-      if (response.success && response.data?.token) {
-        await this.$store.dispatch(STORE_ACTIONS.AUTH.LOGIN, {
-          email: this.email,
-          token: response.data.token,
-        });
-        this.$store.dispatch(STORE_ACTIONS.SNACKBAR.SHOW_MESSAGE, {
-          message: SUCCESS_MESSAGES.LOGIN,
-          color: "success",
-        });
-      }
-    } catch (error: any) {
+    try {
+      await this.$store.dispatch(STORE.ACTIONS.AUTH.AUTHENTICATE, {
+        email: this.email,
+        password: this.password,
+      });
+
+      this.$store.dispatch(STORE.ACTIONS.SNACKBAR.SHOW_MESSAGE, {
+        message: SUCCESS_MESSAGES.LOGIN,
+        color: "success",
+      });
+    } catch (error) {
       console.error("Authentication error:", error);
-      if (error.response) {
-        this.$store.dispatch(STORE_ACTIONS.SNACKBAR.SHOW_MESSAGE, {
-          message: error.response.data.message || ERROR_MESSAGES.AUTH_FAILED,
-          color: "error",
-        });
-      } else {
-        this.$store.dispatch(STORE_ACTIONS.SNACKBAR.SHOW_MESSAGE, {
-          message: ERROR_MESSAGES.AUTH_ERROR,
-          color: "error",
-        });
-      }
+
+      this.$store.dispatch(STORE.ACTIONS.SNACKBAR.SHOW_MESSAGE, {
+        message: ERROR_MESSAGES.AUTH_FAILED,
+        color: "error",
+      });
     } finally {
       this.loading = false;
     }

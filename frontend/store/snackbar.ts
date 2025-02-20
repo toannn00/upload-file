@@ -1,4 +1,5 @@
 import { SnackbarState, MessagePayload } from "~/types/auth";
+import { ActionTree } from "vuex";
 
 export const state = (): SnackbarState => ({
   show: false,
@@ -20,7 +21,7 @@ export const mutations = {
   },
 };
 
-export const actions = {
+export const actions: ActionTree<SnackbarState, any> = {
   showMessage({ commit }: { commit: Function }, payload: MessagePayload): void {
     const { message, color = "success" } = payload;
     commit("showSnackbar", { message, color });

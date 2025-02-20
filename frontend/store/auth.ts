@@ -1,3 +1,4 @@
+import { ActionTree } from "vuex";
 import { AuthState, AuthPayload } from "~/types/auth";
 
 export const state = (): AuthState => ({
@@ -16,15 +17,35 @@ export const mutations = {
   },
 };
 
-export const actions = {
-  login({ commit }: { commit: Function }, payload: AuthPayload): void {
+export const actions: ActionTree<AuthState, any> = {
+  async authenticate(
+    { dispatch },
+    { email, password }: { email: string; password: string }
+  ) {
+    try {
+      const response = await this.$authService.authenticate(email, password);
+
+      if (response.success && response.data?.token) {
+        await dispatch("login", {
+          email,
+          token: response.data.token,
+        });
+      }
+    } catch (error: any) {
+      console.error("Authentication error:", error);
+      throw error;
+    }
+  },
+
+  login({ commit }, payload: AuthPayload): void {
     if (process.client) {
       localStorage.setItem("token", payload.token);
       localStorage.setItem("email", payload.email);
     }
     commit("setAuth", payload);
   },
-  logout({ commit }: { commit: Function }): void {
+
+  logout({ commit }): void {
     if (process.client) {
       localStorage.removeItem("token");
       localStorage.removeItem("email");
